@@ -15,6 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "料理管理",
   description: "自分用の料理レシピ管理アプリ",
+  icons: {
+    apple: "/apple-touch-icon-180.png",
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
