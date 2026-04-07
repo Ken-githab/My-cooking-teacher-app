@@ -66,9 +66,9 @@ export default async function RecipeDetailPage({ params }: Props) {
             <h2 className="text-xl font-bold text-gray-900 mb-4">食材</h2>
             <ul className="space-y-2">
               {recipe.ingredients.map((ing) => (
-                <li key={ing.id} className="flex justify-between text-base">
-                  <span className="text-gray-800 font-medium">{ing.name}</span>
-                  {ing.amount && <span className="text-gray-600 font-medium">{ing.amount}</span>}
+                <li key={ing.id} className="flex justify-between text-lg">
+                  <span className="text-gray-900 font-bold">{ing.name}</span>
+                  {ing.amount && <span className="text-gray-700 font-bold">{ing.amount}</span>}
                 </li>
               ))}
             </ul>
@@ -81,9 +81,9 @@ export default async function RecipeDetailPage({ params }: Props) {
             <ol className="space-y-5">
               {recipe.steps.map((step, i) => (
                 <li key={step.id} className="space-y-2">
-                  <div className="flex gap-3 text-base">
+                  <div className="flex gap-3 text-lg">
                     <span className="font-bold text-orange-500 shrink-0 w-6">{i + 1}.</span>
-                    <p className="text-gray-800 font-medium leading-relaxed">{step.description}</p>
+                    <p className="text-gray-900 font-bold leading-relaxed">{step.description}</p>
                   </div>
                   {step.imageUrl && (
                     // eslint-disable-next-line @next/next/no-img-element
