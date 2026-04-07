@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Suspense } from "react"
 import { prisma } from "@/lib/prisma"
 import { Category } from "@/app/generated/prisma/enums"
@@ -54,19 +55,26 @@ export default async function HomePage({ searchParams }: Props) {
               <Link
                 key={recipe.id}
                 href={`/recipes/${recipe.id}`}
-                className="bg-white rounded-xl border border-gray-200 px-5 py-5 hover:border-gray-300 hover:shadow-sm transition-all flex items-center justify-between"
+                className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-gray-300 hover:shadow-sm transition-all flex items-center"
               >
-                <div>
-                  <p className="text-lg font-medium text-gray-900">{recipe.name}</p>
-                  {recipe.description && (
-                    <p className="text-base text-gray-500 font-medium mt-0.5 line-clamp-1">{recipe.description}</p>
-                  )}
+                {recipe.imageUrl && (
+                  <div className="relative w-24 h-24 shrink-0">
+                    <Image src={recipe.imageUrl} alt={recipe.name} fill className="object-cover" />
+                  </div>
+                )}
+                <div className="flex-1 flex items-center justify-between px-4 py-4">
+                  <div>
+                    <p className="text-lg font-medium text-gray-900">{recipe.name}</p>
+                    {recipe.description && (
+                      <p className="text-base text-gray-500 font-medium mt-0.5 line-clamp-1">{recipe.description}</p>
+                    )}
+                  </div>
+                  <span
+                    className={`text-sm font-medium px-3 py-1 rounded-full ml-4 shrink-0 ${CATEGORY_COLORS[recipe.category]}`}
+                  >
+                    {CATEGORY_LABELS[recipe.category]}
+                  </span>
                 </div>
-                <span
-                  className={`text-sm font-medium px-3 py-1 rounded-full ml-4 shrink-0 ${CATEGORY_COLORS[recipe.category]}`}
-                >
-                  {CATEGORY_LABELS[recipe.category]}
-                </span>
               </Link>
             ))}
           </div>

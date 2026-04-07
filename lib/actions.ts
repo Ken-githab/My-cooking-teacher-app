@@ -8,6 +8,7 @@ import { Category } from "@/app/generated/prisma/enums"
 export type RecipeFormData = {
   name: string
   category: Category
+  imageUrl: string
   description: string
   ingredients: { name: string; amount: string }[]
   steps: { description: string }[]
@@ -18,6 +19,7 @@ export async function createRecipe(data: RecipeFormData) {
     data: {
       name: data.name,
       category: data.category,
+      imageUrl: data.imageUrl || null,
       description: data.description || null,
       ingredients: {
         create: data.ingredients.map((ing, i) => ({
@@ -44,6 +46,7 @@ export async function updateRecipe(id: string, data: RecipeFormData) {
     data: {
       name: data.name,
       category: data.category,
+      imageUrl: data.imageUrl || null,
       description: data.description || null,
       ingredients: {
         deleteMany: {},

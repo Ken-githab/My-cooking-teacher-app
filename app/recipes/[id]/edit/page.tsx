@@ -22,6 +22,7 @@ export default async function EditRecipePage({ params }: Props) {
   const initial = {
     name: recipe.name,
     category: recipe.category,
+    imageUrl: recipe.imageUrl ?? "",
     description: recipe.description ?? "",
     ingredients: recipe.ingredients.map((i) => ({
       name: i.name,

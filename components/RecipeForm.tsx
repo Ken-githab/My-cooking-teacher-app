@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useRef } from "react"
+import Image from "next/image"
 import { Category } from "@/app/generated/prisma/enums"
 import { CATEGORY_LABELS } from "@/lib/categories"
 import type { RecipeFormData } from "@/lib/actions"
@@ -9,6 +10,7 @@ type Props = {
   initial?: {
     name: string
     category: Category
+    imageUrl: string
     description: string
     ingredients: { name: string; amount: string }[]
     steps: { description: string }[]
@@ -20,6 +22,7 @@ type Props = {
 export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
   const [name, setName] = useState(initial?.name ?? "")
   const [category, setCategory] = useState<Category>(initial?.category ?? Category.MEAT)
+  const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "")
   const [description, setDescription] = useState(initial?.description ?? "")
   const [ingredients, setIngredients] = useState<{ name: string; amount: string }[]>(
     initial?.ingredients ?? [{ name: "", amount: "" }]
@@ -27,12 +30,26 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
   const [steps, setSteps] = useState<{ description: string }[]>(
     initial?.steps ?? [{ description: "" }]
   )
+  const [uploading, setUploading] = useState(false)
   const [pending, startTransition] = useTransition()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    const formData = new FormData()
+    formData.append("file", file)
+    const res = await fetch("/api/upload", { method: "POST", body: formData })
+    const json = await res.json()
+    setImageUrl(json.url)
+    setUploading(false)
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     startTransition(async () => {
-      await onSubmit({ name, category, description, ingredients, steps })
+      await onSubmit({ name, category, imageUrl, description, ingredients, steps })
     })
   }
 
@@ -58,6 +75,40 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* 写真 */}
+      <div>
+        <label className="block text-base font-semibold text-gray-800 mb-2">写真</label>
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          className="relative w-full h-52 rounded-xl border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer hover:border-orange-400 transition-colors"
+        >
+          {imageUrl ? (
+            <Image src={imageUrl} alt="料理の写真" fill className="object-cover" />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-2">
+              <span className="text-4xl">📷</span>
+              <span className="text-base font-medium">
+                {uploading ? "アップロード中..." : "タップして写真を選ぶ"}
+              </span>
+            </div>
+          )}
+          {imageUrl && (
+            <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+              <span className="text-white text-base font-semibold bg-black/50 px-3 py-1 rounded-lg">
+                写真を変更
+              </span>
+            </div>
+          )}
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageChange}
+        />
+      </div>
+
       {/* 料理名 */}
       <div>
         <label className="block text-base font-semibold text-gray-800 mb-1">料理名 *</label>
@@ -90,18 +141,6 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
             </button>
           ))}
         </div>
-      </div>
-
-      {/* メモ */}
-      <div>
-        <label className="block text-base font-semibold text-gray-800 mb-1">メモ（任意）</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={2}
-          className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
-          placeholder="備考など"
-        />
       </div>
 
       {/* 食材 */}
@@ -182,9 +221,21 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
         </button>
       </div>
 
+      {/* メモ（一番下） */}
+      <div>
+        <label className="block text-base font-semibold text-gray-800 mb-1">メモ（任意）</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={3}
+          className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+          placeholder="備考など"
+        />
+      </div>
+
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || uploading}
         className="w-full bg-orange-500 text-white py-4 text-lg rounded-lg font-medium hover:bg-orange-600 disabled:opacity-50 transition-colors"
       >
         {pending ? "保存中..." : submitLabel}

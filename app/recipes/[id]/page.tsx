@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { CATEGORY_LABELS, CATEGORY_COLORS } from "@/lib/categories"
@@ -41,7 +42,13 @@ export default async function RecipeDetailPage({ params }: Props) {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-5">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          {recipe.imageUrl && (
+            <div className="relative w-full h-56">
+              <Image src={recipe.imageUrl} alt={recipe.name} fill className="object-cover" />
+            </div>
+          )}
+          <div className="p-6">
           <div className="flex items-start justify-between gap-3">
             <h1 className="text-3xl font-bold text-gray-900">{recipe.name}</h1>
             <span
@@ -53,6 +60,7 @@ export default async function RecipeDetailPage({ params }: Props) {
           {recipe.description && (
             <p className="mt-2 text-gray-600 text-base font-medium">{recipe.description}</p>
           )}
+          </div>
         </div>
 
         {recipe.ingredients.length > 0 && (

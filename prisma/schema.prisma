@@ -18,6 +18,7 @@ model Recipe {
   id          String       @id @default(cuid())
   name        String
   category    Category
+  imageUrl    String?
   description String?
   ingredients Ingredient[]
   steps       Step[]
