@@ -247,7 +247,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
               {/* 手順ごとの写真 */}
               <div
                 onClick={() => stepFileRefs.current[i]?.click()}
-                className="relative w-full h-32 rounded-lg border-2 border-dashed border-gray-200 overflow-hidden cursor-pointer hover:border-orange-400 transition-colors ml-8"
+                className="relative w-full h-32 rounded-lg border-2 border-dashed border-gray-200 overflow-hidden cursor-pointer hover:border-orange-400 transition-colors"
               >
                 {step.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
