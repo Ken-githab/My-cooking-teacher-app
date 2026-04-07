@@ -60,7 +60,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* 料理名 */}
       <div>
-        <label className="block text-base font-medium text-gray-700 mb-1">料理名 *</label>
+        <label className="block text-base font-medium text-gray-800 mb-1">料理名 *</label>
         <input
           type="text"
           required
@@ -73,7 +73,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
 
       {/* カテゴリ */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">カテゴリ *</label>
+        <label className="block text-base font-medium text-gray-800 mb-1">カテゴリ *</label>
         <div className="flex gap-2 flex-wrap">
           {Object.values(Category).map((c) => (
             <button
@@ -94,7 +94,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
 
       {/* メモ */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">メモ（任意）</label>
+        <label className="block text-base font-medium text-gray-800 mb-1">メモ（任意）</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -106,7 +106,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
 
       {/* 食材 */}
       <div>
-        <label className="block text-base font-medium text-gray-700 mb-2">食材</label>
+        <label className="block text-base font-medium text-gray-800 mb-2">食材</label>
         <div className="space-y-2">
           {ingredients.map((ing, i) => (
             <div key={i} className="flex gap-2 items-center">
@@ -128,7 +128,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
                 <button
                   type="button"
                   onClick={() => removeIngredient(i)}
-                  className="text-gray-400 hover:text-red-500 text-lg leading-none"
+                  className="text-gray-400 hover:text-red-500 text-2xl leading-none px-1"
                 >
                   ×
                 </button>
@@ -139,7 +139,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
         <button
           type="button"
           onClick={addIngredient}
-          className="mt-2 text-sm text-gray-500 hover:text-orange-500 underline"
+          className="mt-3 text-base text-gray-600 font-medium hover:text-orange-500"
         >
           + 食材を追加
         </button>
@@ -147,7 +147,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
 
       {/* 作り方 */}
       <div>
-        <label className="block text-base font-medium text-gray-700 mb-2">作り方</label>
+        <label className="block text-base font-medium text-gray-800 mb-2">作り方</label>
         <div className="space-y-2">
           {steps.map((step, i) => (
             <div key={i} className="flex gap-2 items-start">
@@ -165,7 +165,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
                 <button
                   type="button"
                   onClick={() => removeStep(i)}
-                  className="mt-2 text-gray-400 hover:text-red-500 text-lg leading-none"
+                  className="mt-2 text-gray-400 hover:text-red-500 text-2xl leading-none px-1"
                 >
                   ×
                 </button>
@@ -176,7 +176,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
         <button
           type="button"
           onClick={addStep}
-          className="mt-2 text-sm text-gray-500 hover:text-orange-500 underline"
+          className="mt-3 text-base text-gray-600 font-medium hover:text-orange-500"
         >
           + 手順を追加
         </button>
