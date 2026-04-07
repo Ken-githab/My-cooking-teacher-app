@@ -24,7 +24,7 @@ export default async function RecipeDetailPage({ params }: Props) {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-gray-400 hover:text-gray-600 text-base">
+            <Link href="/" className="text-gray-700 hover:text-orange-500 text-base font-bold">
               ← 戻る
             </Link>
           </div>
