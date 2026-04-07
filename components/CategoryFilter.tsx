@@ -36,8 +36,8 @@ export default function CategoryFilter() {
           href={href(tab.value)}
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
             current === tab.value
-              ? "bg-gray-800 text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              ? "bg-orange-500 text-white"
+              : "bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-600"
           }`}
         >
           {tab.label}

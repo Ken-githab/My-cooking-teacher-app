@@ -31,7 +31,7 @@ export default async function RecipeDetailPage({ params }: Props) {
           <div className="flex items-center gap-2">
             <Link
               href={`/recipes/${id}/edit`}
-              className="text-sm px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="text-sm px-3 py-1.5 border border-orange-400 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors"
             >
               編集
             </Link>

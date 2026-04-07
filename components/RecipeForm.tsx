@@ -66,7 +66,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
           placeholder="例: 鶏の唐揚げ"
         />
       </div>
@@ -82,8 +82,8 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
               onClick={() => setCategory(c)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                 category === c
-                  ? "bg-gray-800 text-white border-gray-800"
-                  : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"
+                  ? "bg-orange-500 text-white border-orange-500"
+                  : "bg-white text-gray-600 border-gray-300 hover:border-orange-400 hover:text-orange-500"
               }`}
             >
               {CATEGORY_LABELS[c]}
@@ -99,7 +99,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={2}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 resize-none"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
           placeholder="備考など"
         />
       </div>
@@ -115,14 +115,14 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
                 value={ing.name}
                 onChange={(e) => updateIngredient(i, "name", e.target.value)}
                 placeholder="食材名"
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm"
+                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
               />
               <input
                 type="text"
                 value={ing.amount}
                 onChange={(e) => updateIngredient(i, "amount", e.target.value)}
                 placeholder="分量"
-                className="w-28 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm"
+                className="w-28 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
               />
               {ingredients.length > 1 && (
                 <button
@@ -139,7 +139,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
         <button
           type="button"
           onClick={addIngredient}
-          className="mt-2 text-sm text-gray-500 hover:text-gray-700 underline"
+          className="mt-2 text-sm text-gray-500 hover:text-orange-500 underline"
         >
           + 食材を追加
         </button>
@@ -159,7 +159,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
                 onChange={(e) => updateStep(i, e.target.value)}
                 placeholder={`手順 ${i + 1}`}
                 rows={2}
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm resize-none"
+                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm resize-none"
               />
               {steps.length > 1 && (
                 <button
@@ -176,7 +176,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
         <button
           type="button"
           onClick={addStep}
-          className="mt-2 text-sm text-gray-500 hover:text-gray-700 underline"
+          className="mt-2 text-sm text-gray-500 hover:text-orange-500 underline"
         >
           + 手順を追加
         </button>
@@ -185,7 +185,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="w-full bg-gray-800 text-white py-2.5 rounded-lg font-medium hover:bg-gray-700 disabled:opacity-50 transition-colors"
+        className="w-full bg-orange-500 text-white py-2.5 rounded-lg font-medium hover:bg-orange-600 disabled:opacity-50 transition-colors"
       >
         {pending ? "保存中..." : submitLabel}
       </button>

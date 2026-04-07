@@ -29,7 +29,7 @@ export default async function HomePage({ searchParams }: Props) {
           <h1 className="text-xl font-bold text-gray-900">料理管理</h1>
           <Link
             href="/recipes/new"
-            className="bg-gray-800 text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            className="bg-orange-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
           >
             + 追加
           </Link>
