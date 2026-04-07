@@ -59,7 +59,7 @@ export default async function HomePage({ searchParams }: Props) {
                 <div>
                   <p className="text-lg font-medium text-gray-900">{recipe.name}</p>
                   {recipe.description && (
-                    <p className="text-base text-gray-500 mt-0.5 line-clamp-1">{recipe.description}</p>
+                    <p className="text-base text-gray-500 font-medium mt-0.5 line-clamp-1">{recipe.description}</p>
                   )}
                 </div>
                 <span

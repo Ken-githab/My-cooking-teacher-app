@@ -51,18 +51,18 @@ export default async function RecipeDetailPage({ params }: Props) {
             </span>
           </div>
           {recipe.description && (
-            <p className="mt-2 text-gray-600 text-base">{recipe.description}</p>
+            <p className="mt-2 text-gray-600 text-base font-medium">{recipe.description}</p>
           )}
         </div>
 
         {recipe.ingredients.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">食材</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">食材</h2>
             <ul className="space-y-2">
               {recipe.ingredients.map((ing) => (
                 <li key={ing.id} className="flex justify-between text-base">
-                  <span className="text-gray-800">{ing.name}</span>
-                  {ing.amount && <span className="text-gray-500">{ing.amount}</span>}
+                  <span className="text-gray-800 font-medium">{ing.name}</span>
+                  {ing.amount && <span className="text-gray-600 font-medium">{ing.amount}</span>}
                 </li>
               ))}
             </ul>
@@ -71,12 +71,12 @@ export default async function RecipeDetailPage({ params }: Props) {
 
         {recipe.steps.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">作り方</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">作り方</h2>
             <ol className="space-y-3">
               {recipe.steps.map((step, i) => (
                 <li key={step.id} className="flex gap-3 text-base">
                   <span className="font-bold text-gray-400 shrink-0 w-6">{i + 1}.</span>
-                  <p className="text-gray-800 leading-relaxed">{step.description}</p>
+                  <p className="text-gray-800 font-medium leading-relaxed">{step.description}</p>
                 </li>
               ))}
             </ol>
