@@ -24,14 +24,14 @@ export default async function RecipeDetailPage({ params }: Props) {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">
+            <Link href="/" className="text-gray-400 hover:text-gray-600 text-base">
               ← 戻る
             </Link>
           </div>
           <div className="flex items-center gap-2">
             <Link
               href={`/recipes/${id}/edit`}
-              className="text-sm px-3 py-1.5 border border-orange-400 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors"
+              className="text-base px-4 py-2 border border-orange-400 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors"
             >
               編集
             </Link>
@@ -43,24 +43,24 @@ export default async function RecipeDetailPage({ params }: Props) {
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-5">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{recipe.name}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{recipe.name}</h1>
             <span
-              className={`text-xs font-medium px-2.5 py-1 rounded-full shrink-0 mt-1 ${CATEGORY_COLORS[recipe.category]}`}
+              className={`text-sm font-medium px-3 py-1.5 rounded-full shrink-0 mt-1 ${CATEGORY_COLORS[recipe.category]}`}
             >
               {CATEGORY_LABELS[recipe.category]}
             </span>
           </div>
           {recipe.description && (
-            <p className="mt-2 text-gray-600 text-sm">{recipe.description}</p>
+            <p className="mt-2 text-gray-600 text-base">{recipe.description}</p>
           )}
         </div>
 
         {recipe.ingredients.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="font-bold text-gray-900 mb-3">食材</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">食材</h2>
             <ul className="space-y-2">
               {recipe.ingredients.map((ing) => (
-                <li key={ing.id} className="flex justify-between text-sm">
+                <li key={ing.id} className="flex justify-between text-base">
                   <span className="text-gray-800">{ing.name}</span>
                   {ing.amount && <span className="text-gray-500">{ing.amount}</span>}
                 </li>
@@ -71,11 +71,11 @@ export default async function RecipeDetailPage({ params }: Props) {
 
         {recipe.steps.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="font-bold text-gray-900 mb-3">作り方</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">作り方</h2>
             <ol className="space-y-3">
               {recipe.steps.map((step, i) => (
-                <li key={step.id} className="flex gap-3 text-sm">
-                  <span className="font-bold text-gray-400 shrink-0 w-5">{i + 1}.</span>
+                <li key={step.id} className="flex gap-3 text-base">
+                  <span className="font-bold text-gray-400 shrink-0 w-6">{i + 1}.</span>
                   <p className="text-gray-800 leading-relaxed">{step.description}</p>
                 </li>
               ))}
