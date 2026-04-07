@@ -2,7 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import RecipeForm from "@/components/RecipeForm"
-import { updateRecipe } from "@/lib/actions"
+import { updateRecipe, type RecipeFormData } from "@/lib/actions"
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -18,6 +18,11 @@ export default async function EditRecipePage({ params }: Props) {
   })
 
   if (!recipe) notFound()
+
+  async function handleUpdate(data: RecipeFormData) {
+    "use server"
+    await updateRecipe(id, data)
+  }
 
   const initial = {
     name: recipe.name,
@@ -46,7 +51,7 @@ export default async function EditRecipePage({ params }: Props) {
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <RecipeForm
             initial={initial}
-            onSubmit={(data) => updateRecipe(id, data)}
+            onSubmit={handleUpdate}
             submitLabel="更新する"
           />
         </div>
