@@ -78,11 +78,21 @@ export default async function RecipeDetailPage({ params }: Props) {
         {recipe.steps.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">作り方</h2>
-            <ol className="space-y-3">
+            <ol className="space-y-5">
               {recipe.steps.map((step, i) => (
-                <li key={step.id} className="flex gap-3 text-base">
-                  <span className="font-bold text-gray-400 shrink-0 w-6">{i + 1}.</span>
-                  <p className="text-gray-800 font-medium leading-relaxed">{step.description}</p>
+                <li key={step.id} className="space-y-2">
+                  <div className="flex gap-3 text-base">
+                    <span className="font-bold text-orange-500 shrink-0 w-6">{i + 1}.</span>
+                    <p className="text-gray-800 font-medium leading-relaxed">{step.description}</p>
+                  </div>
+                  {step.imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={step.imageUrl}
+                      alt={`手順${i + 1}の写真`}
+                      className="w-full rounded-lg object-cover max-h-60 ml-9"
+                    />
+                  )}
                 </li>
               ))}
             </ol>

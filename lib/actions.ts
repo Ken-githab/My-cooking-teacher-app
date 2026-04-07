@@ -11,7 +11,7 @@ export type RecipeFormData = {
   imageUrl: string
   description: string
   ingredients: { name: string; amount: string }[]
-  steps: { description: string }[]
+  steps: { description: string; imageUrl: string }[]
 }
 
 export async function createRecipe(data: RecipeFormData) {
@@ -31,6 +31,7 @@ export async function createRecipe(data: RecipeFormData) {
       steps: {
         create: data.steps.map((step, i) => ({
           description: step.description,
+          imageUrl: step.imageUrl || null,
           order: i,
         })),
       },
@@ -60,6 +61,7 @@ export async function updateRecipe(id: string, data: RecipeFormData) {
         deleteMany: {},
         create: data.steps.map((step, i) => ({
           description: step.description,
+          imageUrl: step.imageUrl || null,
           order: i,
         })),
       },

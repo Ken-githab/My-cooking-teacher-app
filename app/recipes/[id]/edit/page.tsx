@@ -33,7 +33,7 @@ export default async function EditRecipePage({ params }: Props) {
       name: i.name,
       amount: i.amount ?? "",
     })),
-    steps: recipe.steps.map((s) => ({ description: s.description })),
+    steps: recipe.steps.map((s) => ({ description: s.description, imageUrl: s.imageUrl ?? "" })),
   }
 
   return (

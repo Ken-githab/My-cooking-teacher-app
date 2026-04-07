@@ -40,9 +40,10 @@ model Ingredient {
 }
 
 model Step {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   description String
+  imageUrl    String?
   order       Int
   recipeId    String
-  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipe      Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 }
