@@ -12,6 +12,9 @@ enum Category {
   FISH
   NABE
   PASTA
+  RICE
+  SINGLE
+  DESSERT
 }
 
 model Recipe {

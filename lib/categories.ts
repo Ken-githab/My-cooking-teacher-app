@@ -5,6 +5,9 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   FISH: "魚料理",
   NABE: "鍋料理",
   PASTA: "パスタ",
+  RICE: "ご飯物",
+  SINGLE: "一品物",
+  DESSERT: "デザート",
 }
 
 export const CATEGORY_COLORS: Record<Category, string> = {
@@ -12,4 +15,7 @@ export const CATEGORY_COLORS: Record<Category, string> = {
   FISH: "bg-blue-100 text-blue-700",
   NABE: "bg-orange-100 text-orange-700",
   PASTA: "bg-yellow-100 text-yellow-700",
+  RICE: "bg-green-100 text-green-700",
+  SINGLE: "bg-purple-100 text-purple-700",
+  DESSERT: "bg-pink-100 text-pink-700",
 }
