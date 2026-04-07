@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useRef } from "react"
 import { Category } from "@/app/generated/prisma/enums"
-import { CATEGORY_LABELS } from "@/lib/categories"
+import { CATEGORY_LABELS, CATEGORY_ORDER } from "@/lib/categories"
 import type { RecipeFormData } from "@/lib/actions"
 
 type Props = {
@@ -138,7 +138,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
       <div>
         <label className="block text-base font-semibold text-gray-800 mb-1">カテゴリ *</label>
         <div className="flex gap-2 flex-wrap">
-          {Object.values(Category).map((c) => (
+          {CATEGORY_ORDER.map((c) => (
             <button
               key={c}
               type="button"

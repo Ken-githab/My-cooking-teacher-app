@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useSearchParams, usePathname } from "next/navigation"
 import { Category } from "@/app/generated/prisma/enums"
-import { CATEGORY_LABELS } from "@/lib/categories"
+import { CATEGORY_LABELS, CATEGORY_ORDER } from "@/lib/categories"
 
 const ALL = "all"
 
@@ -25,7 +25,7 @@ export default function CategoryFilter() {
 
   const tabs = [
     { label: "すべて", value: ALL },
-    ...Object.values(Category).map((c) => ({ label: CATEGORY_LABELS[c], value: c })),
+    ...CATEGORY_ORDER.map((c) => ({ label: CATEGORY_LABELS[c], value: c })),
   ]
 
   return (

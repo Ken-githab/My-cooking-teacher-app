@@ -1,5 +1,15 @@
 import { Category } from "@/app/generated/prisma/enums"
 
+export const CATEGORY_ORDER: Category[] = [
+  Category.MEAT,
+  Category.FISH,
+  Category.NABE,
+  Category.RICE,
+  Category.PASTA,
+  Category.SINGLE,
+  Category.DESSERT,
+]
+
 export const CATEGORY_LABELS: Record<Category, string> = {
   MEAT: "肉料理",
   FISH: "魚料理",
