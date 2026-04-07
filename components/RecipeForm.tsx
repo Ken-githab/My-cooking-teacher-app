@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useTransition, useRef } from "react"
-import Image from "next/image"
 import { Category } from "@/app/generated/prisma/enums"
 import { CATEGORY_LABELS } from "@/lib/categories"
 import type { RecipeFormData } from "@/lib/actions"
@@ -38,12 +37,24 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    const formData = new FormData()
-    formData.append("file", file)
-    const res = await fetch("/api/upload", { method: "POST", body: formData })
-    const json = await res.json()
-    setImageUrl(json.url)
+    const base64 = await resizeAndConvert(file, 800)
+    setImageUrl(base64)
     setUploading(false)
+  }
+
+  function resizeAndConvert(file: File, maxWidth: number): Promise<string> {
+    return new Promise((resolve) => {
+      const img = new window.Image()
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width)
+        const canvas = document.createElement("canvas")
+        canvas.width = img.width * scale
+        canvas.height = img.height * scale
+        canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height)
+        resolve(canvas.toDataURL("image/jpeg", 0.8))
+      }
+      img.src = URL.createObjectURL(file)
+    })
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -83,7 +94,8 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
           className="relative w-full h-52 rounded-xl border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer hover:border-orange-400 transition-colors"
         >
           {imageUrl ? (
-            <Image src={imageUrl} alt="料理の写真" fill className="object-cover" />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={imageUrl} alt="料理の写真" className="w-full h-full object-cover" />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-2">
               <span className="text-4xl">📷</span>
