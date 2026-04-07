@@ -15,6 +15,7 @@ enum Category {
   RICE
   SINGLE
   DESSERT
+  LOWTEMP
 }
 
 model Recipe {

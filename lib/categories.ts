@@ -8,6 +8,7 @@ export const CATEGORY_ORDER: Category[] = [
   Category.PASTA,
   Category.SINGLE,
   Category.DESSERT,
+  Category.LOWTEMP,
 ]
 
 export const CATEGORY_LABELS: Record<Category, string> = {
@@ -18,6 +19,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   RICE: "ご飯物",
   SINGLE: "一品物",
   DESSERT: "デザート",
+  LOWTEMP: "低温調理",
 }
 
 export const CATEGORY_COLORS: Record<Category, string> = {
@@ -28,4 +30,5 @@ export const CATEGORY_COLORS: Record<Category, string> = {
   RICE: "bg-green-100 text-green-700",
   SINGLE: "bg-purple-100 text-purple-700",
   DESSERT: "bg-pink-100 text-pink-700",
+  LOWTEMP: "bg-cyan-100 text-cyan-700",
 }
