@@ -34,10 +34,10 @@ export default function CategoryFilter() {
         <Link
           key={tab.value}
           href={href(tab.value)}
-          className={`px-5 py-2 rounded-full text-base font-medium transition-colors ${
+          className={`px-5 py-2 rounded-full text-base font-bold transition-colors ${
             current === tab.value
               ? "bg-orange-500 text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-600"
+              : "bg-gray-100 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
           }`}
         >
           {tab.label}

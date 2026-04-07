@@ -62,13 +62,13 @@ export default async function HomePage({ searchParams }: Props) {
                 )}
                 <div className="flex-1 flex items-center justify-between px-4 py-4">
                   <div>
-                    <p className="text-lg font-medium text-gray-900">{recipe.name}</p>
+                    <p className="text-lg font-bold text-gray-900">{recipe.name}</p>
                     {recipe.description && (
-                      <p className="text-base text-gray-500 font-medium mt-0.5 line-clamp-1">{recipe.description}</p>
+                      <p className="text-base text-gray-600 font-semibold mt-0.5 line-clamp-1">{recipe.description}</p>
                     )}
                   </div>
                   <span
-                    className={`text-sm font-medium px-3 py-1 rounded-full ml-4 shrink-0 ${CATEGORY_COLORS[recipe.category]}`}
+                    className={`text-sm font-bold px-3 py-1 rounded-full ml-4 shrink-0 ${CATEGORY_COLORS[recipe.category]}`}
                   >
                     {CATEGORY_LABELS[recipe.category]}
                   </span>
