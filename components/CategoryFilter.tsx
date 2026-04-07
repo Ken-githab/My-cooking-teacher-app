@@ -1,0 +1,48 @@
+"use client"
+
+import Link from "next/link"
+import { useSearchParams, usePathname } from "next/navigation"
+import { Category } from "@/app/generated/prisma/enums"
+import { CATEGORY_LABELS } from "@/lib/categories"
+
+const ALL = "all"
+
+export default function CategoryFilter() {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const current = searchParams.get("category") ?? ALL
+
+  function href(value: string) {
+    const params = new URLSearchParams(searchParams)
+    if (value === ALL) {
+      params.delete("category")
+    } else {
+      params.set("category", value)
+    }
+    const qs = params.toString()
+    return `${pathname}${qs ? `?${qs}` : ""}`
+  }
+
+  const tabs = [
+    { label: "すべて", value: ALL },
+    ...Object.values(Category).map((c) => ({ label: CATEGORY_LABELS[c], value: c })),
+  ]
+
+  return (
+    <div className="flex gap-2 flex-wrap">
+      {tabs.map((tab) => (
+        <Link
+          key={tab.value}
+          href={href(tab.value)}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            current === tab.value
+              ? "bg-gray-800 text-white"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+          }`}
+        >
+          {tab.label}
+        </Link>
+      ))}
+    </div>
+  )
+}

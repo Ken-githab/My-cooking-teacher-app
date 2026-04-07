@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Category {
+  MEAT
+  FISH
+  NABE
+  PASTA
+}
+
+model Recipe {
+  id          String       @id @default(cuid())
+  name        String
+  category    Category
+  description String?
+  ingredients Ingredient[]
+  steps       Step[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Ingredient {
+  id       String @id @default(cuid())
+  name     String
+  amount   String?
+  order    Int
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model Step {
+  id          String @id @default(cuid())
+  description String
+  order       Int
+  recipeId    String
+  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
