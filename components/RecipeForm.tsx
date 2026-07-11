@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition, useRef } from "react"
+import { upload } from "@vercel/blob/client"
 import { Category } from "@/app/generated/prisma/enums"
 import { CATEGORY_LABELS, CATEGORY_ORDER } from "@/lib/categories"
 import type { RecipeFormData } from "@/lib/actions"
@@ -24,12 +25,16 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
   const [category, setCategory] = useState<Category>(initial?.category ?? Category.MEAT)
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "")
   const [thumbUrl, setThumbUrl] = useState(initial?.thumbUrl ?? "")
+  const [imagePreview, setImagePreview] = useState(initial?.imageUrl ?? "")
   const [description, setDescription] = useState(initial?.description ?? "")
   const [ingredients, setIngredients] = useState<{ name: string; amount: string }[]>(
     initial?.ingredients ?? [{ name: "", amount: "" }]
   )
   const [steps, setSteps] = useState<{ description: string; imageUrl: string }[]>(
     initial?.steps ?? [{ description: "", imageUrl: "" }]
+  )
+  const [stepPreviews, setStepPreviews] = useState<string[]>(
+    initial?.steps.map((s) => s.imageUrl) ?? [""]
   )
   const [uploading, setUploading] = useState(false)
   const [stepUploading, setStepUploading] = useState<boolean[]>([false])
@@ -45,17 +50,17 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
     })
   }
 
-  function resizeImage(img: HTMLImageElement, maxWidth: number, quality: number): string {
+  function resizeCanvas(img: HTMLImageElement, maxWidth: number): HTMLCanvasElement {
     const scale = Math.min(1, maxWidth / img.width)
     const canvas = document.createElement("canvas")
     canvas.width = img.width * scale
     canvas.height = img.height * scale
     canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height)
-    return canvas.toDataURL("image/jpeg", quality)
+    return canvas
   }
 
   // 一覧表示用に中央を正方形に切り出した小さいサムネイルを作る
-  function makeThumb(img: HTMLImageElement, size: number): string {
+  function thumbCanvas(img: HTMLImageElement, size: number): HTMLCanvasElement {
     const side = Math.min(img.width, img.height)
     const sx = (img.width - side) / 2
     const sy = (img.height - side) / 2
@@ -63,12 +68,21 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
     canvas.width = size
     canvas.height = size
     canvas.getContext("2d")!.drawImage(img, sx, sy, side, side, 0, 0, size, size)
-    return canvas.toDataURL("image/jpeg", 0.65)
+    return canvas
   }
 
-  async function resizeAndConvert(file: File, maxWidth: number): Promise<string> {
-    const img = await loadImage(file)
-    return resizeImage(img, maxWidth, 0.8)
+  function canvasToBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob> {
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob!), "image/jpeg", quality)
+    })
+  }
+
+  async function uploadImage(blob: Blob): Promise<string> {
+    const result = await upload(`recipes/${crypto.randomUUID()}.jpg`, blob, {
+      access: "public",
+      handleUploadUrl: "/api/blob-upload",
+    })
+    return result.url
   }
 
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -76,8 +90,18 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
     if (!file) return
     setUploading(true)
     const img = await loadImage(file)
-    setImageUrl(resizeImage(img, 800, 0.8))
-    setThumbUrl(makeThumb(img, 240))
+    const mainCanvas = resizeCanvas(img, 800)
+    setImagePreview(mainCanvas.toDataURL("image/jpeg", 0.8))
+    const [mainBlob, thumbBlob] = await Promise.all([
+      canvasToBlob(mainCanvas, 0.8),
+      canvasToBlob(thumbCanvas(img, 240), 0.65),
+    ])
+    const [mainUrl, thumbUrlResult] = await Promise.all([
+      uploadImage(mainBlob),
+      uploadImage(thumbBlob),
+    ])
+    setImageUrl(mainUrl)
+    setThumbUrl(thumbUrlResult)
     setUploading(false)
   }
 
@@ -89,8 +113,16 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
       next[i] = true
       return next
     })
-    const base64 = await resizeAndConvert(file, 800)
-    setSteps((prev) => prev.map((s, idx) => (idx === i ? { ...s, imageUrl: base64 } : s)))
+    const img = await loadImage(file)
+    const canvas = resizeCanvas(img, 800)
+    setStepPreviews((prev) => {
+      const next = [...prev]
+      next[i] = canvas.toDataURL("image/jpeg", 0.8)
+      return next
+    })
+    const blob = await canvasToBlob(canvas, 0.8)
+    const url = await uploadImage(blob)
+    setSteps((prev) => prev.map((s, idx) => (idx === i ? { ...s, imageUrl: url } : s)))
     setStepUploading((prev) => {
       const next = [...prev]
       next[i] = false
@@ -117,10 +149,12 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
 
   function addStep() {
     setSteps([...steps, { description: "", imageUrl: "" }])
+    setStepPreviews((prev) => [...prev, ""])
     setStepUploading((prev) => [...prev, false])
   }
   function removeStep(i: number) {
     setSteps(steps.filter((_, idx) => idx !== i))
+    setStepPreviews((prev) => prev.filter((_, idx) => idx !== i))
     setStepUploading((prev) => prev.filter((_, idx) => idx !== i))
   }
   function updateStepDesc(i: number, value: string) {
@@ -136,9 +170,9 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
           onClick={() => fileInputRef.current?.click()}
           className="relative w-full h-52 rounded-xl border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer hover:border-orange-400 transition-colors"
         >
-          {imageUrl ? (
+          {imagePreview ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt="料理の写真" className="w-full h-full object-cover" />
+            <img src={imagePreview} alt="料理の写真" className="w-full h-full object-cover" />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-2">
               <span className="text-4xl">📷</span>
@@ -147,7 +181,12 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
               </span>
             </div>
           )}
-          {imageUrl && (
+          {uploading && (
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <span className="text-white text-base font-semibold">アップロード中...</span>
+            </div>
+          )}
+          {imagePreview && !uploading && (
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
               <span className="text-white text-base font-semibold bg-black/50 px-3 py-1 rounded-lg">
                 写真を変更
@@ -271,9 +310,9 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
                 onClick={() => stepFileRefs.current[i]?.click()}
                 className="relative w-full h-32 rounded-lg border-2 border-dashed border-gray-200 overflow-hidden cursor-pointer hover:border-orange-400 transition-colors"
               >
-                {step.imageUrl ? (
+                {stepPreviews[i] ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={step.imageUrl} alt={`手順${i + 1}の写真`} className="w-full h-full object-cover" />
+                  <img src={stepPreviews[i]} alt={`手順${i + 1}の写真`} className="w-full h-full object-cover" />
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-1">
                     <span className="text-2xl">📷</span>
@@ -282,7 +321,12 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
                     </span>
                   </div>
                 )}
-                {step.imageUrl && (
+                {stepUploading[i] && (
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    <span className="text-white text-sm font-semibold">アップロード中...</span>
+                  </div>
+                )}
+                {stepPreviews[i] && !stepUploading[i] && (
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                     <span className="text-white text-sm font-semibold bg-black/50 px-3 py-1 rounded-lg">
                       写真を変更
