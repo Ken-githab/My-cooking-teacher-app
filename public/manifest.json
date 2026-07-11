@@ -4,8 +4,8 @@
   "description": "自分用の料理レシピ管理アプリ",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FF8C00",
-  "theme_color": "#FF8C00",
+  "background_color": "#ea580c",
+  "theme_color": "#ea580c",
   "icons": [
     {
       "src": "/icon-192.png",
