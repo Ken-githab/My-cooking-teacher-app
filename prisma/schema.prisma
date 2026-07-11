@@ -23,6 +23,7 @@ model Recipe {
   name        String
   category    Category
   imageUrl    String?
+  thumbUrl    String?
   description String?
   ingredients Ingredient[]
   steps       Step[]

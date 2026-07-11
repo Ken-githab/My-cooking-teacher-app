@@ -10,6 +10,7 @@ type Props = {
     name: string
     category: Category
     imageUrl: string
+    thumbUrl: string
     description: string
     ingredients: { name: string; amount: string }[]
     steps: { description: string; imageUrl: string }[]
@@ -22,6 +23,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
   const [name, setName] = useState(initial?.name ?? "")
   const [category, setCategory] = useState<Category>(initial?.category ?? Category.MEAT)
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "")
+  const [thumbUrl, setThumbUrl] = useState(initial?.thumbUrl ?? "")
   const [description, setDescription] = useState(initial?.description ?? "")
   const [ingredients, setIngredients] = useState<{ name: string; amount: string }[]>(
     initial?.ingredients ?? [{ name: "", amount: "" }]
@@ -35,27 +37,47 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const stepFileRefs = useRef<(HTMLInputElement | null)[]>([])
 
-  function resizeAndConvert(file: File, maxWidth: number): Promise<string> {
+  function loadImage(file: File): Promise<HTMLImageElement> {
     return new Promise((resolve) => {
       const img = new window.Image()
-      img.onload = () => {
-        const scale = Math.min(1, maxWidth / img.width)
-        const canvas = document.createElement("canvas")
-        canvas.width = img.width * scale
-        canvas.height = img.height * scale
-        canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height)
-        resolve(canvas.toDataURL("image/jpeg", 0.8))
-      }
+      img.onload = () => resolve(img)
       img.src = URL.createObjectURL(file)
     })
+  }
+
+  function resizeImage(img: HTMLImageElement, maxWidth: number, quality: number): string {
+    const scale = Math.min(1, maxWidth / img.width)
+    const canvas = document.createElement("canvas")
+    canvas.width = img.width * scale
+    canvas.height = img.height * scale
+    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height)
+    return canvas.toDataURL("image/jpeg", quality)
+  }
+
+  // 一覧表示用に中央を正方形に切り出した小さいサムネイルを作る
+  function makeThumb(img: HTMLImageElement, size: number): string {
+    const side = Math.min(img.width, img.height)
+    const sx = (img.width - side) / 2
+    const sy = (img.height - side) / 2
+    const canvas = document.createElement("canvas")
+    canvas.width = size
+    canvas.height = size
+    canvas.getContext("2d")!.drawImage(img, sx, sy, side, side, 0, 0, size, size)
+    return canvas.toDataURL("image/jpeg", 0.65)
+  }
+
+  async function resizeAndConvert(file: File, maxWidth: number): Promise<string> {
+    const img = await loadImage(file)
+    return resizeImage(img, maxWidth, 0.8)
   }
 
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    const base64 = await resizeAndConvert(file, 800)
-    setImageUrl(base64)
+    const img = await loadImage(file)
+    setImageUrl(resizeImage(img, 800, 0.8))
+    setThumbUrl(makeThumb(img, 240))
     setUploading(false)
   }
 
@@ -79,7 +101,7 @@ export default function RecipeForm({ initial, onSubmit, submitLabel }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     startTransition(async () => {
-      await onSubmit({ name, category, imageUrl, description, ingredients, steps })
+      await onSubmit({ name, category, imageUrl, thumbUrl, description, ingredients, steps })
     })
   }
 

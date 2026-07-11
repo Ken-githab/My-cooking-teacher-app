@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { updateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Category } from "@/app/generated/prisma/enums"
@@ -9,6 +9,7 @@ export type RecipeFormData = {
   name: string
   category: Category
   imageUrl: string
+  thumbUrl: string
   description: string
   ingredients: { name: string; amount: string }[]
   steps: { description: string; imageUrl: string }[]
@@ -20,6 +21,7 @@ export async function createRecipe(data: RecipeFormData) {
       name: data.name,
       category: data.category,
       imageUrl: data.imageUrl || null,
+      thumbUrl: data.thumbUrl || null,
       description: data.description || null,
       ingredients: {
         create: data.ingredients.map((ing, i) => ({
@@ -37,7 +39,7 @@ export async function createRecipe(data: RecipeFormData) {
       },
     },
   })
-  revalidatePath("/")
+  updateTag("recipes")
   redirect(`/recipes/${recipe.id}`)
 }
 
@@ -48,6 +50,7 @@ export async function updateRecipe(id: string, data: RecipeFormData) {
       name: data.name,
       category: data.category,
       imageUrl: data.imageUrl || null,
+      thumbUrl: data.thumbUrl || null,
       description: data.description || null,
       ingredients: {
         deleteMany: {},
@@ -67,13 +70,14 @@ export async function updateRecipe(id: string, data: RecipeFormData) {
       },
     },
   })
-  revalidatePath("/")
-  revalidatePath(`/recipes/${id}`)
+  updateTag("recipes")
+  updateTag(`recipe-${id}`)
   redirect(`/recipes/${id}`)
 }
 
 export async function deleteRecipe(id: string) {
   await prisma.recipe.delete({ where: { id } })
-  revalidatePath("/")
+  updateTag("recipes")
+  updateTag(`recipe-${id}`)
   redirect("/")
 }

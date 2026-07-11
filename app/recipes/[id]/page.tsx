@@ -1,26 +1,36 @@
+
 import Link from "next/link"
+import { Suspense } from "react"
 import { notFound } from "next/navigation"
-import { prisma } from "@/lib/prisma"
+import { getRecipe, getRecipeList } from "@/lib/data"
 import { CATEGORY_LABELS, CATEGORY_COLORS } from "@/lib/categories"
 import DeleteButton from "./DeleteButton"
 
 type Props = { params: Promise<{ id: string }> }
 
-export default async function RecipeDetailPage({ params }: Props) {
-  const { id } = await params
+export async function generateStaticParams() {
+  const recipes = await getRecipeList()
+  return recipes.map((r) => ({ id: r.id }))
+}
 
-  const recipe = await prisma.recipe.findUnique({
-    where: { id },
-    include: {
-      ingredients: { orderBy: { order: "asc" } },
-      steps: { orderBy: { order: "asc" } },
-    },
-  })
+export default function RecipeDetailPage({ params }: Props) {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Suspense fallback={<DetailSkeleton />}>
+        {params.then(({ id }) => (
+          <RecipeDetail id={id} />
+        ))}
+      </Suspense>
+    </div>
+  )
+}
 
+async function RecipeDetail({ id }: { id: string }) {
+  const recipe = await getRecipe(id)
   if (!recipe) notFound()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -47,17 +57,17 @@ export default async function RecipeDetailPage({ params }: Props) {
             <img src={recipe.imageUrl} alt={recipe.name} className="w-full h-56 object-cover" />
           )}
           <div className="p-6">
-          <div className="flex items-start justify-between gap-3">
-            <h1 className="text-3xl font-bold text-gray-900">{recipe.name}</h1>
-            <span
-              className={`text-sm font-medium px-3 py-1.5 rounded-full shrink-0 mt-1 ${CATEGORY_COLORS[recipe.category]}`}
-            >
-              {CATEGORY_LABELS[recipe.category]}
-            </span>
-          </div>
-          {recipe.description && (
-            <p className="mt-2 text-gray-600 text-base font-medium">{recipe.description}</p>
-          )}
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="text-3xl font-bold text-gray-900">{recipe.name}</h1>
+              <span
+                className={`text-sm font-medium px-3 py-1.5 rounded-full shrink-0 mt-1 ${CATEGORY_COLORS[recipe.category]}`}
+              >
+                {CATEGORY_LABELS[recipe.category]}
+              </span>
+            </div>
+            {recipe.description && (
+              <p className="mt-2 text-gray-600 text-base font-medium">{recipe.description}</p>
+            )}
           </div>
         </div>
 
@@ -99,6 +109,37 @@ export default async function RecipeDetailPage({ params }: Props) {
           </div>
         )}
       </main>
-    </div>
+    </>
+  )
+}
+
+function DetailSkeleton() {
+  return (
+    <>
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
+          <div className="flex gap-2">
+            <div className="h-10 w-16 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="h-10 w-16 bg-gray-200 rounded-lg animate-pulse" />
+          </div>
+        </div>
+      </header>
+      <main className="max-w-3xl mx-auto px-4 py-6 space-y-5">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="w-full h-56 bg-gray-200 animate-pulse" />
+          <div className="p-6 space-y-3">
+            <div className="h-8 w-2/3 bg-gray-200 rounded animate-pulse" />
+            <div className="h-4 w-1/2 bg-gray-100 rounded animate-pulse" />
+          </div>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
+          <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+          <div className="h-4 w-full bg-gray-100 rounded animate-pulse" />
+          <div className="h-4 w-5/6 bg-gray-100 rounded animate-pulse" />
+          <div className="h-4 w-4/6 bg-gray-100 rounded animate-pulse" />
+        </div>
+      </main>
+    </>
   )
 }
