@@ -35,7 +35,11 @@ export default function proxy(req: NextRequest) {
 <div style="text-align:center;background:#222;border-radius:24px;padding:2.5rem">
 <div style="font-size:2.5rem">🔒</div>
 <p style="font-weight:bold;margin:.75rem 0 .25rem">アクセスキーが必要です</p>
-<p style="color:#aaa;font-size:.85rem;margin:0">ブックマークした「キー付きURL」から開いてください</p>
+<p style="color:#aaa;font-size:.85rem;margin:0">キー付きURLから開くか、キーを入力してください</p>
+<form method="GET" style="margin-top:1.25rem;display:flex;gap:.5rem;justify-content:center">
+<input name="key" type="password" placeholder="アクセスキー" autocomplete="off" style="background:#333;border:none;border-radius:12px;padding:.65rem .9rem;color:#fff;font-size:16px;width:11rem">
+<button type="submit" style="background:#fff;color:#111;border:none;border-radius:12px;padding:.65rem 1rem;font-weight:bold;font-size:.9rem">解錠</button>
+</form>
 </div></body></html>`,
     { status: 401, headers: { "Content-Type": "text/html; charset=utf-8" } },
   );
